@@ -6,7 +6,9 @@ import re
 import requests
 import subprocess
 
-# get total number of commits 
+AUTH_TOKEN = ''
+
+# get total number of commits
 def get_total_commits():
     p = subprocess.Popen("git rev-list --count HEAD", stdout = subprocess.PIPE, shell=True)
     (output, err) = p.communicate()

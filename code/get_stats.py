@@ -25,8 +25,6 @@ def file_manipulations():
             for author in get_contributing_authors():
                 if(opt_split[0][:-1] in author):
                     l.append(author)
-            # r = re.compile(opt_split[0])
-            # l = list(filter(r.match, get_contributing_authors()))
 
             if(len(l) is 0):
                 print('{0} - author not found'.format(opt_split[0]))
@@ -46,6 +44,7 @@ project_root = os.getcwd()
 repo_names = [name for name in os.listdir(project_root) if os.path.isdir(os.path.join(project_root, name))]
 print(repo_names)
 
+
 for repo in repo_names:
     # enter into project's directory
     os.chdir(project_root + "/" + repo)
@@ -59,8 +58,11 @@ for repo in repo_names:
     res = pd.DataFrame(columns=['commit count', 'percentage of commits', 'Commit Frequency', 'Issue Count', 'Percentage of issues', 'Files Changed', 'LOC Inserted', 'LOC Deleted'], index=authors)
 
     for contrib in commit_contributions:
-        res.loc[contrib[1]]['commit count'] = int(contrib[0])
-        res.loc[contrib[1]]['percentage of commits'] = (int(contrib[0]) / total_commit_count) * 100
+        try:
+            res.loc[contrib[1]]['commit count'] = int(contrib[0])
+            res.loc[contrib[1]]['percentage of commits'] = (int(contrib[0]) / total_commit_count) * 100
+        except:
+            pass
 
     # get commit frequency - number of commits per week
     freq = get_commit_frequency()
@@ -71,7 +73,7 @@ for repo in repo_names:
             res.loc[k]['Commit Frequency'] = 0
 
     # get total number of issues
-    df = pd.read_csv('../../data/Project Update Form.csv')
+    df = pd.read_csv('../../data/projectURLs.csv')
     repo_link = df[df['GitHub link to Repository'].str.contains(repo)]['GitHub link to Repository'].values[0]
 
     if 'https://github.com/' in repo_link:
@@ -90,7 +92,7 @@ for repo in repo_names:
             res.loc[author]['Percentage of issues'] = total_issue_count_by_user / total_issue_count
         else:
             res.loc[author]['Percentage of issues'] = 0
-    
+
     # get number of files changed, insertions and deletions
     file_manipulations()
 
